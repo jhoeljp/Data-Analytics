@@ -30,6 +30,7 @@ if __name__ == "__main__":
 
             #raise exception if request invalid 
             response.raise_for_status()
+            # print(response.url)
 
             #convert json to text 
             obj = response.json()
@@ -53,9 +54,10 @@ if __name__ == "__main__":
 
             while page <= max_pages:
                 #assign page number to payload 
-                payload['page']:page
+                payload['page'] = page
 
-                print(f"Requesting page {page}/{max_pages}")
+                # print(f"Requesting page {page}/{max_pages}")
+                print(f"{page}/{max_pages}")
 
                 #make request with page info 
                 data, status = last_fm_api(headers,payload)
@@ -82,7 +84,8 @@ if __name__ == "__main__":
         payload = {
             'api_key': API_key,
             'method': 'chart.gettopartists',
-            'format': 'json'
+            'format': 'json',
+            'page': 1
         }
 
         #api request time elapsed 
