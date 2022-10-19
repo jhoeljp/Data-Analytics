@@ -10,7 +10,6 @@ from os import getcwd, environ, path
 from time import sleep, time
 import pandas as pd 
 import requests
-import pprint
 
 #single api request 
 def last_fm_api(header,payload,key,sub_key):
@@ -30,9 +29,6 @@ def last_fm_api(header,payload,key,sub_key):
     if obj[key][sub_key] == []:
         print(f"\nEmpty records have been found at page {payload['page']}")
         return None,404
-    
-    # text = json.dumps(obj, sort_keys=True, indent=4)
-    # data= json.loads(text)
 
     # if it's not a cached result, sleep
     if not getattr(response, 'from_cache', False):
@@ -62,7 +58,7 @@ def last_fm_api_paging(max_pages,headers,payload, key, sub_key):
             print(f"Somethig went wrong: Status {status}")
             break
         
-        # print(f"Requesting page {page}/{max_pages}")
+        #Requesting current page number 
         print(f"{page}/{max_pages}")
 
         #append request 
@@ -84,13 +80,17 @@ def chose_top_chart_category():
     method, key, sub_key, file_title= '','','',''
 
     while choice == 0:
+
+        #display choice menu
         print("\n")
         print("Last FM API".center(30,'*'))
         print(f"1) Get Top Tracks\n2) Get Top Artists\n3) Get Top Tags\n\n")
         tmp_input = input("Choose option 1, 2 or 3 : ")
 
         try: 
+
             choice = int(tmp_input)
+
             if choice == 1: 
                 method = 'chart.gettoptracks'
                 key = 'tracks'
@@ -112,7 +112,9 @@ def chose_top_chart_category():
             else: 
                 raise ConversionError("Invalid option!")
 
+        #error for options out of bounds 
         except:
+
             print("Invalid input, only valid options are 1, 2, or 3 ")
             sleep(2)
             choice = 0 
@@ -135,7 +137,7 @@ if __name__ == "__main__":
         API_key = environ.get("API_key")
         API_secret = str(environ.get("API_Shared_secret"))
 
-        #API request 
+        #API request info
         header ={
             'user-agent': 'Dataquest'
         }
@@ -148,6 +150,8 @@ if __name__ == "__main__":
         } 
 
         all_data = []
+
+        #start timer for metrics
         time_start = time()
 
         try:
