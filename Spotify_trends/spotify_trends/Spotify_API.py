@@ -1,6 +1,9 @@
-
 import requests 
-
+import pprint
+'''
+feature playlist = https://developer.spotify.com/documentation/web-api/reference/get-featured-playlists
+playlist = https://developer.spotify.com/documentation/web-api/reference/get-playlist
+'''
 client_id = ""
 client_secret = ""
 
@@ -35,20 +38,55 @@ def get_token():
     except Exception as e: 
         print("not 200 response")
 
-def request_artist(token):
-    url = "https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb"
-
-    header = {"Authorization" : f"Bearer  {token}"}
-
-    artists = requests.get(url=url,
-                                headers=header,
-                                )
+def request_playlist(header, playlist_id):
     
-    print(artists.json())
+    # playlist_id = "0sdmbRcjAGi0nmLTjn87lV?si"
+
+    url = f"https://api.spotify.com/v1/playlists/{playlist_id}"
+    playlist = requests.get(url=url,
+                            headers=header,
+                            )
+    response = playlist.json()
+    print(response['name'])
+    print(response['followers']['total'])
+    # print(response['tracks']['items'])
+
+def request_featured_playlists(header,country_code):
+
+    limit = 4
+    # country_code = "SA"
+
+    url = f"https://api.spotify.com/v1/browse/featured-playlists?limit={limit}&country={country_code}"
+    playlists = requests.get(url=url,
+                            headers=header,
+                            )
+    
+    response = playlists.json()
+
+    playlists_id = []
+
+    for song in response['playlists']['items']:
+        # print(song['name'])
+        # print(song['id'])
+        # print(song['href'])
+        # print('-'*20)
+        playlists_id.append(song['id'])
+
+    return playlists_id
+
 
 if __name__ == '__main__':
 
     api_token = get_token()
-    request_artist(api_token)
-    # print(api_token)
+    header = {"Authorization" : f"Bearer  {api_token}"}
+
+
+    # request_playlist(api_token, header)
+    country_code = ['SA']
+
+    for country in country_code:
+        playlist_id = request_featured_playlists(header, country)
+        # print(f"SA {playlist_id}")
+
+    request_playlist(header,playlist_id[0])
 
