@@ -1,5 +1,6 @@
 import requests 
 import pprint
+import json 
 '''
 feature playlist = https://developer.spotify.com/documentation/web-api/reference/get-featured-playlists
 playlist = https://developer.spotify.com/documentation/web-api/reference/get-playlist
@@ -38,6 +39,14 @@ def get_token():
     except Exception as e: 
         print("not 200 response")
 
+def dump_json(data):
+
+    pprint.pprint(data)
+
+    with open("dump.json",'w') as file:
+        json_string = json.dumps(data) 
+        file.write(json_string)
+
 def request_playlist(header, playlist_id):
     
     # playlist_id = "0sdmbRcjAGi0nmLTjn87lV?si"
@@ -47,9 +56,22 @@ def request_playlist(header, playlist_id):
                             headers=header,
                             )
     response = playlist.json()
-    print(response['name'])
-    print(response['followers']['total'])
-    # print(response['tracks']['items'])
+
+    # pprint.pprint(response)
+    #info 
+    playlist_collaboratory = response['collaborative']
+    
+    playlist_description = response['description']
+    playlist_likes = response['followers']['total']
+    images_url = response['images'][0]['url']
+
+    playlist_name = response['name']
+
+    playlist_owner = response['owner']
+
+    print(playlist_name)
+    print(playlist_likes)
+    print(images_url)
 
 def request_featured_playlists(header,country_code):
 
